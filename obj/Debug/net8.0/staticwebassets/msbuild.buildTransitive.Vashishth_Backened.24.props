@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/Vashishth_Backened.24.props" />
+</Project>
