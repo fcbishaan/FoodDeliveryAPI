@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Vashishth_Backened._24.Models;
 
-namespace Vashishth_Backened._24
+namespace Vashishth_Backened._24.Data
 {
     public class FoodDeliveryContext : DbContext
     {
@@ -11,6 +11,6 @@ namespace Vashishth_Backened._24
         }
         public DbSet<Dish> Dishes {get; set;}
         public DbSet<User> Users {get; set;}
-        //public DbSet<Order> Orders {get; set;}
+        
     }   
 }

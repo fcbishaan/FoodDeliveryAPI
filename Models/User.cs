@@ -1,16 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Vashishth_Backened._24.Models
 {
-    public class User{
-        public Guid Id{get; set;}
-        [Required]
-        public string fullName{get; set;}
-        public DateTime birthDate{get; set;}
-        public string gender{get; set;}
-        public string address {get; set;}
-      //  public email email {get; set;}
-        //public tel phoneNumber {get; set;}
+    public class User
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string Gender { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string Address { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PasswordHash { get; set; }  
     }
-
 }
