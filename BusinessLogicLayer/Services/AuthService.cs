@@ -58,10 +58,12 @@ namespace Vashishth_Backened._24.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
+                Audience = _configuration["Jwt:Audience"],
+                Issuer = _configuration["Jwt:Issuer"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -92,6 +94,7 @@ namespace Vashishth_Backened._24.Services
             }
             return new UserProfileResponse
             {
+                
                 FullName = user.FullName,
                 Email = user.Email,
                 BirthDate = user.BirthDate,

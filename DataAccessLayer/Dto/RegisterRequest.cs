@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 
 namespace Vashishth_Backened._24.Dto
 {
@@ -23,7 +25,8 @@ namespace Vashishth_Backened._24.Dto
         public DateTime BirthDate { get; set; }
 
         [Required]
-        public string Gender { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public Gender Gender { get; set; }
 
         [Required]
         [Phone]

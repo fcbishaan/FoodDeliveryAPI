@@ -120,3 +120,4 @@
 /Users/ishaanvashishth/Desktop/c#/Vashishth_Backened.24/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/ishaanvashishth/Desktop/c#/Vashishth_Backened.24/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
 /Users/ishaanvashishth/Desktop/c#/Vashishth_Backened.24/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/ishaanvashishth/Desktop/c#/Vashishth_Backened.24/bin/Debug/net8.0/Newtonsoft.Json.dll

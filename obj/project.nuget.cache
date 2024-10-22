@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "5nfD2Zidlrg=",
+  "dgSpecHash": "O9Jkz46g7q8=",
   "success": true,
   "projectFilePath": "/Users/ishaanvashishth/Desktop/c#/Vashishth_Backened.24/Vashishth_Backened.24.csproj",
   "expectedPackageFiles": [
@@ -40,6 +40,7 @@
     "/Users/ishaanvashishth/.nuget/packages/microsoft.identitymodel.tokens/8.1.2/microsoft.identitymodel.tokens.8.1.2.nupkg.sha512",
     "/Users/ishaanvashishth/.nuget/packages/microsoft.openapi/1.6.14/microsoft.openapi.1.6.14.nupkg.sha512",
     "/Users/ishaanvashishth/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
+    "/Users/ishaanvashishth/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/ishaanvashishth/.nuget/packages/npgsql/8.0.4/npgsql.8.0.4.nupkg.sha512",
     "/Users/ishaanvashishth/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.8/npgsql.entityframeworkcore.postgresql.8.0.8.nupkg.sha512",
     "/Users/ishaanvashishth/.nuget/packages/swashbuckle.aspnetcore/6.8.1/swashbuckle.aspnetcore.6.8.1.nupkg.sha512",
