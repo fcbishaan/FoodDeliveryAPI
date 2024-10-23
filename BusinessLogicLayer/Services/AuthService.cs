@@ -116,9 +116,9 @@ namespace Vashishth_Backened._24.Services
                 };
             }
             user.FullName = userEdit.FullName;
-            user.Address = user.Address;
-            user.BirthDate = user.BirthDate;
-            user.PhoneNumber = user.PhoneNumber;
+            user.Address = userEdit.Address;
+            user.BirthDate = userEdit.BirthDate;
+            user.PhoneNumber = userEdit.PhoneNumber;
 
             await _context.SaveChangesAsync();
 
