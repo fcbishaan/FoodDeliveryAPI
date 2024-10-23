@@ -53,13 +53,20 @@ namespace Vashishth_Backened._24.Controllers
         }
         [HttpPost("logout")]
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            return Ok( new {message = "Logged out Successfully."});
+            string userid = User?.Claims.FirstOrDefault(c=>c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+            if(string.IsNullOrEmpty(userid))
+            {
+                return Unauthorized ("Please log in to the system first. ");
+            }
+            return Ok("Logged out successful.");
         }
+
+
+
         [HttpGet("profile")]
         [Authorize]
-        //[AllowAnonymous]
         public async Task<IActionResult> GetUserProfile()
         {
              var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -78,6 +85,35 @@ namespace Vashishth_Backened._24.Controllers
              {
                return BadRequest(new { message = ex.Message });
              }
-         }
-    }
+        }
+
+         [HttpPut("profile")]
+         [Authorize]
+         public async Task<IActionResult> EditProfile(UserEdit userEdit)
+         {
+            try
+            {
+                string userid = User?.Claims.FirstOrDefault(c=>c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+                if (string.IsNullOrEmpty(userid))
+               {
+                return Unauthorized(new { message = "Please log in to the system first." });
+               }
+               var res = await _authService.editUser(userEdit);
+               return Ok(res);
+            }
+             catch (InvalidOperationException ex)
+           {
+       
+              return BadRequest(new { message = "Invalid operation: " + ex.Message });
+           }
+              catch (Exception ex)
+           {
+        
+               return StatusCode(500, new Response { Status = "Failure", Message = "An internal server error occurred: " + ex.Message });
+            }
+               return BadRequest();
+         
+           }
+    } 
+
 }

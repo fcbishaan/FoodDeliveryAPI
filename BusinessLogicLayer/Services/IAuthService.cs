@@ -14,5 +14,7 @@ namespace Vashishth_Backened._24.Services
         Task<string> Login (LoginRequest loginRequest);
 
         Task<UserProfileResponse> GetUserProfile (int userId);
+
+        Task <Response> editUser (UserEdit userEdit);
     }
 }

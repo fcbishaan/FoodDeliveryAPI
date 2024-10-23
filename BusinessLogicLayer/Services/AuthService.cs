@@ -84,6 +84,7 @@ namespace Vashishth_Backened._24.Services
             }
             return GenerateJwtToken(user);
         }
+        
         public async Task <UserProfileResponse> GetUserProfile (int userId)
         {
             var user = await _context.Users.FindAsync(userId);
@@ -101,6 +102,30 @@ namespace Vashishth_Backened._24.Services
                 Gender = user.Gender,
                 Address = user.Address,
                 PhoneNumber = user.PhoneNumber,
+            };
+        }
+        public async Task<Response> editUser (UserEdit userEdit) 
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email == userEdit.Email);
+            if(user == null)
+            {
+                return new Response
+                {
+                    Status= "Failure",
+                    Message = "User not found"
+                };
+            }
+            user.FullName = userEdit.FullName;
+            user.Address = user.Address;
+            user.BirthDate = user.BirthDate;
+            user.PhoneNumber = user.PhoneNumber;
+
+            await _context.SaveChangesAsync();
+
+            return new Response
+            {
+                Status = "Success",
+                Message = "User Updated successfully."
             };
         }
     }
