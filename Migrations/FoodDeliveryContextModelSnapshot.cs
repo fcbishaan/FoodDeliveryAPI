@@ -55,7 +55,7 @@ namespace Vashishth_Backened._24.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Dishes");
+                    b.ToTable("Dishes", (string)null);
                 });
 
             modelBuilder.Entity("Vashishth_Backened._24.Models.User", b =>
@@ -94,7 +94,7 @@ namespace Vashishth_Backened._24.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }
