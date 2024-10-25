@@ -7,6 +7,7 @@ using System.Text;
 using Vashishth_Backened._24.Services;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using Vashishth_Backened._24;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
@@ -14,6 +15,8 @@ var Configuration = builder.Configuration;
 builder.Services.AddDbContext<FoodDeliveryContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<IDishService,DishService>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

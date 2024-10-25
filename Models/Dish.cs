@@ -9,9 +9,9 @@ namespace Vashishth_Backened._24.Models
         public string Description {get; set;}
         [Required]
         public double Price { get; set; }
-        public string image { get; set; }
-        public Boolean vegetarian {get; set;}
+        public string Image { get; set; }
+        public Boolean Vegetarian {get; set;}
         public double Rating{get; set; }
-        public DishCategory category {get; set;}
+        public DishCategory Category {get; set;}
     }
 }

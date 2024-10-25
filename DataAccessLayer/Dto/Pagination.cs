@@ -1,6 +1,6 @@
 namespace Vashishth_Backened._24.Dto
 {
-    public class pagination
+    public class Pagination
     {
         public int size {get; set;}
         public int count {get; set;}

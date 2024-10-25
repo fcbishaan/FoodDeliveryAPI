@@ -19,11 +19,11 @@ namespace Vashishth_Backened._24
             var _query = await _context.Dishes.ToListAsync();
             if(categories != null)
             {
-                _query = _query.Where(t=>t.category == categories).ToList();
+                _query = _query.Where(t=>t.Category == categories).ToList();
             }
             if(vegetarian)
             {
-                _query = _query.Where(t=>t.vegetarian.Equals(vegetarian)).ToList();
+                _query = _query.Where(t=>t.Vegetarian.Equals(vegetarian)).ToList();
 
             }
             if(sorting != null)
@@ -58,16 +58,28 @@ namespace Vashishth_Backened._24
                 int totalPages = (int)Math.Ceiling(totalCount/(double)pageSize);
                 var items = _query.Skip((page-1) * pageSize).Take(pageSize).ToList();
 
-                var pagination = new pagination()
+                var pagination = new Pagination()
                 {
                     count = totalCount,
                     current = page,
                     size = pageSize
 
                 };
+            
+                
                 return new DishesPages
                 {
-                    Dishes = items,
+                    Dishes = items.Select(i=>new DishDto{
+                        Id = i.Id,
+                        Name = i.Name,
+                        Description= i.Description,
+                        Price = i.Price,
+                        Category = i.Category,
+                        Vegetarian = i.Vegetarian,
+                        Rating = i.Rating,
+                        Image =i.Image,
+
+                    }).ToList(),
                     Pagination = pagination
                 };
         } 
