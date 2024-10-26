@@ -35,5 +35,22 @@ namespace Vashishth_Backened._24.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("{id}")]
+        public async Task <IActionResult> GetDishById(Guid id)
+        {
+            try 
+            {
+                var dish = await _dishService.GetDishById(id);
+                if(dish == null)
+                {
+                    return NotFound();
+                }
+                return Ok(dish);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

@@ -82,6 +82,25 @@ namespace Vashishth_Backened._24
                     }).ToList(),
                     Pagination = pagination
                 };
-        } 
+        }
+        public async Task<DishDto> GetDishById(Guid id)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if(dish == null)
+            {
+                return null;
+            }
+            return new DishDto
+            {
+                Id = dish.Id,
+                Name = dish.Name,
+                Description = dish.Description,
+                Price = dish.Price,
+                Category = dish.Category,
+                Vegetarian = dish.Vegetarian,
+                Rating = dish.Rating,
+                Image = dish.Image
+            };
+        }
     }
 }

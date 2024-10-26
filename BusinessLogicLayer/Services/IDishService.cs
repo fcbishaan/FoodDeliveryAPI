@@ -7,5 +7,6 @@ namespace Vashishth_Backened._24.Services
     public interface IDishService
     {
         Task<DishesPages> page(DishCategory? categories, bool vegetarian, DishSorting? Sorting, int page );
+        Task<DishDto> GetDishById (Guid id);
     }
 }
