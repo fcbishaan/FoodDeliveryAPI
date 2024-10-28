@@ -7,12 +7,12 @@ public class Basket
     public string Image { get; set; }
 
 
-    public int TotalPrice {get; set;}
+    public double TotalPrice {get; set;}
 
     // Foreign keys
     public Guid DishesId { get; set; } // Dish ID
-    public int UserId { get; set; } // User ID
+    public Guid UserId { get; set; } // User ID
     public Guid? OrderId { get; set; } // Order ID (nullable for when it's not placed yet)
 
-    
+
 }

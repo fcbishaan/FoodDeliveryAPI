@@ -16,7 +16,7 @@ builder.Services.AddDbContext<FoodDeliveryContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<IDishService,DishService>();
-
+builder.Services.AddScoped<IBasketService,BasketService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

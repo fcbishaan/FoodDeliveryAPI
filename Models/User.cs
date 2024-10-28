@@ -4,7 +4,7 @@ namespace Vashishth_Backened._24.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FullName { get; set; }
         public Gender Gender { get; set; }
         public DateTime BirthDate { get; set; }
