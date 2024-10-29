@@ -17,11 +17,12 @@ public class BasketService : IBasketService
     }
 
     
-    public async Task<List<BasketDto>> GetBasketsByUserId(Guid userId)
+    public async Task<List<BasketDto>> GetBasketsByUserId(string userId)
     {
         // Fetch baskets for the given user
+        var userGuid = Guid.Parse(userId); 
         var baskets = await _context.Baskets
-            .Where(b => b.UserId == userId)
+            .Where(b => b.UserId == userGuid)
             .ToListAsync();
 
         // Manually map Basket entities to BasketDto
@@ -66,31 +67,31 @@ public class BasketService : IBasketService
         }
         else
         {
-            // If the basket entry exists, update it
-            basket.Amount++;  // Increase the amount
-            basket.TotalPrice = basket.Price * basket.Amount;  // Recalculate the total price
+            
+            basket.Amount++;  
+            basket.TotalPrice = basket.Price * basket.Amount;  
         }
 
-        // Save changes to the database
+       
         await _context.SaveChangesAsync();
     }
 
-    // Method to delete or update a basket item
+    
     public async Task DeleteOrUpdateBasket(Guid dishId, Guid userId, bool decrease)
     {
-        // Fetch the basket entry for the user and dish
+        
         var basket = await _context.Baskets
             .FirstOrDefaultAsync(b => b.UserId == userId && b.DishesId == dishId);
 
-        if (basket == null) return;  // If no basket is found, return early
+        if (basket == null) return;  
 
         if (decrease)
         {
-            // If decreasing the amount, reduce it by 1
+          
             basket.Amount--;
-            basket.TotalPrice = basket.Price * basket.Amount;  // Recalculate the total price
+            basket.TotalPrice = basket.Price * basket.Amount;  
 
-            // If the amount reaches zero, remove the basket entry
+          
             if (basket.Amount <= 0)
             {
                 _context.Baskets.Remove(basket);
@@ -98,11 +99,11 @@ public class BasketService : IBasketService
         }
         else
         {
-            // If not decreasing, remove the basket entry
+           
             _context.Baskets.Remove(basket);
         }
 
-        // Save changes to the database
+    
         await _context.SaveChangesAsync();
     }
            public async Task<bool> CheckIfDishExists(Guid dishId) 
@@ -110,7 +111,10 @@ public class BasketService : IBasketService
             var dish = await _context.Dishes.FirstOrDefaultAsync(d => d.Id == dishId);
             return dish != null;
         }
-    
+     public async Task<Basket> GetBasketByDishIdAndUserId(Guid dishid, Guid userid)
+        {
+            return await _context.Baskets.FirstOrDefaultAsync(b => b.DishesId == dishid && b.UserId == userid);
+        }     
 }
 
 

@@ -30,7 +30,7 @@ namespace Vashishth_Backened._24.Controllers
                 {
                     return Unauthorized("PLease log in the system first");
                 }
-                var res = await _basketService.GetBasketsByUserId(Guid.Parse(userid));
+                var res = await _basketService.GetBasketsByUserId(userid);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -68,31 +68,31 @@ namespace Vashishth_Backened._24.Controllers
             }
 
         }
-        /*
+        
         [HttpDelete ("dish/{dishid}")]
-        public async Task<ActionResult> deleteBaskets (Guid dishid, bool Increase)
+        public async Task<ActionResult> deleteBaskets (Guid dishid, bool increase)
         {
             try 
             {
-                string userid= User.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.Authentication)?.Value ?? "";
+                string userid= User.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier)?.Value ?? "";
                 if(string.IsNullOrEmpty(userid))
                 {
                     return Unauthorized("Please log in to the system");
 
                 }
-                var basket = await _basketService.GetBasketsByUserId(dishid, userid);
+                var basket = await _basketService.GetBasketByDishIdAndUserId(dishid, Guid.Parse(userid));
                 if(basket == null)
                 {
                     return NotFound();
                 }
-                await _basketService.DeleteOrUpdateBasket(dishid,userid,increase);
+                await _basketService.DeleteOrUpdateBasket(dishid,Guid.Parse(userid),increase);
                 return Ok();
             }
             catch(Exception ex)
             {
                 return StatusCode(500);
             }
-        }*/
+        }
 
      
         
