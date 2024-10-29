@@ -78,7 +78,7 @@ namespace Vashishth_Backened._24.Controllers
 
               try
              {
-               var profile = await _authService.GetUserProfile(int.Parse(userIdClaim));
+               var profile = await _authService.GetUserProfile(Guid.Parse(userIdClaim));
                return Ok(profile);
              }
               catch (Exception ex)

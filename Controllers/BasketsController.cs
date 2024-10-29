@@ -25,7 +25,7 @@ namespace Vashishth_Backened._24.Controllers
         {
             try
             {
-                string userid = User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.Authentication)?.Value ?? "";
+                string userid = User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier)?.Value ?? "";
                 if(string.IsNullOrEmpty(userid))
                 {
                     return Unauthorized("PLease log in the system first");
@@ -45,7 +45,7 @@ namespace Vashishth_Backened._24.Controllers
 		{
             try
             {
-                string userid = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value ?? "";
+                string userid = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
                 if (string.IsNullOrEmpty(userid))
                 {
 

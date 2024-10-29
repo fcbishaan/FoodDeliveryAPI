@@ -13,7 +13,7 @@ namespace Vashishth_Backened._24.Services
 
         Task<string> Login (LoginRequest loginRequest);
 
-        Task<UserProfileResponse> GetUserProfile (int userId);
+        Task<UserProfileResponse> GetUserProfile (Guid userId);
 
         Task <Response> editUser (UserEdit userEdit);
     }

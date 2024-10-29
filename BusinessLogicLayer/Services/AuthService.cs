@@ -85,7 +85,7 @@ namespace Vashishth_Backened._24.Services
             return GenerateJwtToken(user);
         }
         
-        public async Task <UserProfileResponse> GetUserProfile (int userId)
+        public async Task <UserProfileResponse> GetUserProfile (Guid userId)
         {
             var user = await _context.Users.FindAsync(userId);
 
