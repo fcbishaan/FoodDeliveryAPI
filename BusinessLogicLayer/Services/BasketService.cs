@@ -77,7 +77,7 @@ public class BasketService : IBasketService
     }
 
     
-    public async Task DeleteOrUpdateBasket(Guid dishId, Guid userId, bool decrease)
+    public async Task DeleteOrUpdateBasket(Guid dishId, Guid userId, bool increase)
     {
         
         var basket = await _context.Baskets
@@ -85,7 +85,7 @@ public class BasketService : IBasketService
 
         if (basket == null) return;  
 
-        if (decrease)
+        if (increase)
         {
           
             basket.Amount--;
