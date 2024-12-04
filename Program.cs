@@ -17,6 +17,9 @@ builder.Services.AddDbContext<FoodDeliveryContext>(options =>
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<IDishService,DishService>();
 builder.Services.AddScoped<IBasketService,BasketService>();
+//builder.Services.AddScoped<>();
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

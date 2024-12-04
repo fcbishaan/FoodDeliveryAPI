@@ -13,6 +13,5 @@ public class Basket
     public Guid DishesId { get; set; } // Dish ID
     public Guid UserId { get; set; } // User ID
     public Guid? OrderId { get; set; } // Order ID (nullable for when it's not placed yet)
-
-
+   
 }

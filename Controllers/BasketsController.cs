@@ -74,7 +74,7 @@ namespace Vashishth_Backened._24.Controllers
         {
             try 
             {
-                string userid= User.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier)?.Value ?? "";
+                string userid= User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
                 if(string.IsNullOrEmpty(userid))
                 {
                     return Unauthorized("Please log in to the system");
