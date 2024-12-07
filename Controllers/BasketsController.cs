@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Vashishth_Backened._24.Dto;
 using Vashishth_Backened._24.Services;
-using Vashishth_Backened._24.Models;
-using System.Security.Claims;
 
 namespace Vashishth_Backened._24.Controllers
 {
@@ -19,82 +19,79 @@ namespace Vashishth_Backened._24.Controllers
             _basketService = basketService;
         }
 
-        // GET: api/Basket/{userId}
+       
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                string userid = User?.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier)?.Value ?? "";
-                if(string.IsNullOrEmpty(userid))
+                string userId = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+                if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized("PLease log in the system first");
+                    return Unauthorized("Please log in to the system first.");
                 }
-                var res = await _basketService.GetBasketsByUserId(userid);
-                return Ok(res);
+
+                var baskets = await _basketService.GetBasketsByUserId(userId);
+                return Ok(baskets);
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                return StatusCode(500, new { error = "An error occurred while processing your request.", details = ex.Message });
             }
         }
 
-
-             [HttpPost("dish/{dishid}")]
-        public async Task<IActionResult> CreateBaskets(Guid dishid)
-		{
+        
+        [HttpPost("dish/{dishid}")]
+        public async Task<IActionResult> CreateBasket(Guid dishid)
+        {
             try
             {
-                string userid = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
-                if (string.IsNullOrEmpty(userid))
+                string userId = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+                if (string.IsNullOrEmpty(userId))
                 {
-
-                    return Unauthorized("Please log in to the system first");
+                    return Unauthorized("Please log in to the system first.");
                 }
 
                 bool dishExists = await _basketService.CheckIfDishExists(dishid);
                 if (!dishExists)
                 {
-                    return NotFound(); 
+                    return NotFound("Dish not found.");
                 }
 
-
-                await _basketService.CreateBasket(dishid,Guid.Parse(userid));
-                return Ok();
+                await _basketService.CreateBasket(dishid, userId);
+                return Ok(new { message = "Dish added to the basket." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                return StatusCode(500, new { error = "An error occurred while processing your request.", details = ex.Message });
             }
-
         }
-        
-        [HttpDelete ("dish/{dishid}")]
-        public async Task<ActionResult> deleteBaskets (Guid dishid, bool increase)
+
+      
+        [HttpDelete("dish/{dishid}")]
+        public async Task<IActionResult> DeleteBasket(Guid dishid, bool increase)
         {
-            try 
+            try
             {
-                string userid= User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
-                if(string.IsNullOrEmpty(userid))
+                string userId = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+                if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized("Please log in to the system");
+                    return Unauthorized("Please log in to the system first.");
+                }
 
-                }
-                var basket = await _basketService.GetBasketByDishIdAndUserId(dishid, Guid.Parse(userid));
-                if(basket == null)
+                var basket = await _basketService.GetBasketByDishIdAndUserId(dishid, userId);
+                if (basket == null)
                 {
-                    return NotFound();
+                    return NotFound("Basket entry not found.");
                 }
-                await _basketService.DeleteOrUpdateBasket(dishid,Guid.Parse(userid),increase);
-                return Ok();
+
+                await _basketService.DeleteBaskets(dishid, userId, increase);
+                return Ok(new { message = "Basket updated successfully." });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(500);
+                return StatusCode(500, new { error = "An error occurred while processing your request.", details = ex.Message });
             }
         }
-
-     
-        
     }
 }

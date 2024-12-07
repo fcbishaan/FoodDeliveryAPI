@@ -10,8 +10,7 @@ public class Basket
     public double TotalPrice {get; set;}
 
     // Foreign keys
-    public Guid DishesId { get; set; } // Dish ID
-    public Guid UserId { get; set; } // User ID
-    public Guid? OrderId { get; set; } // Order ID (nullable for when it's not placed yet)
-   
+    public string DishesId { get; set; } 
+    public string UserId { get; set; } 
+    public string? OrderId { get; set; } 
 }
