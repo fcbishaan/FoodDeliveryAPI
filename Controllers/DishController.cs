@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Vashishth_Backened._24.Dto;
@@ -48,6 +49,53 @@ namespace Vashishth_Backened._24.Controllers
                 return Ok(dish);
             }
             catch(Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+        [HttpPost("{id}/rating")]
+		public async Task<IActionResult> AddRating(Guid id, int rating)
+		{
+            try
+            {
+                string userid = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+                if (string.IsNullOrEmpty(userid))
+                {
+                    return Unauthorized("Please log in to the system first");
+                }
+
+                var res = await _dishService.SetRating(id, rating);
+
+                if (res == null)
+                {
+                    return NotFound(); 
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+              [HttpGet("{id}/rating/check")]
+                public IActionResult CheckRating(Guid id)
+		{
+            try
+            {
+                string userid = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+                if (string.IsNullOrEmpty(userid))
+                {
+                    return Unauthorized("Please log in to the system first");
+                }
+
+                return Ok(_dishService.CheckRating(id, userid));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest();
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500);
             }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Vashishth_Backened.24")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2a524211a5bfa2dd49793c0ce024bf2356a6219")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9fdc93747c355b8bc8c9f77248743588a805708b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Vashishth_Backened.24")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Vashishth_Backened.24")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

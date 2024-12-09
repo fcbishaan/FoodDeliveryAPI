@@ -102,5 +102,28 @@ namespace Vashishth_Backened._24
                 Image = dish.Image
             };
         }
+        	public bool CheckRating(Guid id, string userid)
+		{
+
+			var entity = _context.Baskets.Where(e => e.DishesId == id.ToString() && e.UserId == userid && e.OrderId != "").ToList();
+
+			return entity.Count() > 0 ? true : false;
+		}
+
+		public async Task<Response> SetRating(Guid id, int rating)
+		{
+			var entity = await _context.Dishes.FirstOrDefaultAsync(e => e.Id == id);
+			if (entity != null)
+			{
+				entity.Rating = rating;
+				await _context.SaveChangesAsync();
+				return new Response { Status = "Success", Message = "ok" };
+
+			}
+			else
+			{
+				return null;
+			}
+		}
     }
 }
