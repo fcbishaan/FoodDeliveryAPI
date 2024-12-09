@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebDAL.Data.Dto
+namespace Vashishth_Backened._24.Dto
 {
 	public class OrderInfoDto
 	{
-		public Guid id { get; set; }
+		public Guid Id { get; set; }
 
 	
 		public string deliveryTime { get; set; }
