@@ -6,6 +6,8 @@ using Vashishth_Backened._24.Data;
 using Vashishth_Backened._24.Dto;
 using Vashishth_Backened._24.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 namespace Vashishth_Backened._24.Services
 {
     public class AuthService : IAuthService
@@ -82,7 +84,18 @@ namespace Vashishth_Backened._24.Services
             {
                 throw new Exception ("Invalid Email or password.");
             }
-            return GenerateJwtToken(user);
+
+            string token = GenerateJwtToken(user);
+            var storeToken = new StorageToken
+            {
+                id = Guid.NewGuid(),
+                email = user.Email,
+                token = token
+            };
+
+            _context.StorageTokens.Add(storeToken);
+            await _context.SaveChangesAsync();
+            return token;
         }
         
         public async Task <UserProfileResponse> GetUserProfile (Guid userId)
@@ -128,5 +141,29 @@ namespace Vashishth_Backened._24.Services
                 Message = "User Updated successfully."
             };
         }
+        
+        public async Task<bool> logoutUser(string email)
+     {
+    try
+    {
+        var user = await _context.StorageTokens
+            .FirstOrDefaultAsync(u => u.email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+        if (user != null)
+        {
+             user.IsRevoked = true;
+            _context.StorageTokens.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
+        return true; // Return true regardless of whether the token was found or not.
     }
+    catch (Exception ex)
+    {
+        throw new Exception("An error occurred while logging out.", ex);
+    }
+      }
+  }
+
+    
 }

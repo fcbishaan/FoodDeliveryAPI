@@ -3,6 +3,7 @@ using Vashishth_Backened._24.Dto;
 using Vashishth_Backened._24.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Vashishth_Backened._24.Models;
 
 namespace Vashishth_Backened._24.Controllers
 {
@@ -18,102 +19,125 @@ namespace Vashishth_Backened._24.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        [ProducesResponseType (200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "Invalid input data." });
+
             try
             {
-               
                 var token = await _authService.Register(request);
-
                 return Ok(new { token });
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("Email is already in use"))
+            {
+                return Conflict(new { message = "Email is already in use." });
             }
             catch (Exception ex)
             {
-                if (ex.Message == "Email is already in use.")
-                {
-                    return BadRequest(new { message = "Email is already in use." });
-                }
-
-                
-                return StatusCode(500, new { message = "An error occurred during registration." });
+                return StatusCode(500, new { message = "An error occurred during registration.", details = ex.Message });
             }
         }
-          [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+
+        [HttpPost("login")]
+        [ProducesResponseType (200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "Invalid input data." });
+
             try
             {
                 var token = await _authService.Login(request);
                 return Ok(new { token });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return Unauthorized(new { message = ex.Message });
             }
         }
+
         [HttpPost("logout")]
-        [Authorize]
+        [Authorize(Policy = "AnyAuthenticatedUser")]
+        [ProducesResponseType(typeof(StorageToken), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Logout()
         {
-            string userid = User?.Claims.FirstOrDefault(c=>c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
-            if(string.IsNullOrEmpty(userid))
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "Please log in to the system first." });
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(userEmail))
+                return BadRequest(new { message = "User email not found in token." });
+
+            try
             {
-                return Unauthorized ("Please log in to the system first. ");
+                var isSuccess = await _authService.logoutUser(userEmail);
+                return isSuccess ? Ok(new { message = "Logged out successfully." }) : BadRequest(new { message = "Failed to log out." });
             }
-            return Ok("Logged out successful.");
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while logging out.", details = ex.Message });
+            }
         }
-
-
 
         [HttpGet("profile")]
         [Authorize]
+        [ProducesResponseType (200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> GetUserProfile()
         {
-             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-             //Console.WriteLine($"----------------------{userIdClaim}");
-             if (userIdClaim == null) //|| !Guid.TryParse(userIdClaim, out Guid userId))
-             {
-              return BadRequest(new { message = "Invalid user ID." });
-             }
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userId, out Guid userGuid))
+                return BadRequest(new { message = "Invalid user ID." });
 
-              try
-             {
-               var profile = await _authService.GetUserProfile(Guid.Parse(userIdClaim));
-               return Ok(profile);
-             }
-              catch (Exception ex)
-             {
-               return BadRequest(new { message = ex.Message });
-             }
-        }
-
-         [HttpPut("profile")]
-         [Authorize]
-         public async Task<IActionResult> EditProfile(UserEdit userEdit)
-         {
             try
             {
-                string userid = User?.Claims.FirstOrDefault(c=>c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
-                if (string.IsNullOrEmpty(userid))
-               {
-                return Unauthorized(new { message = "Please log in to the system first." });
-               }
-               var res = await _authService.editUser(userEdit);
-               return Ok(res);
+                var profile = await _authService.GetUserProfile(userGuid);
+                return Ok(profile);
             }
-             catch (InvalidOperationException ex)
-           {
-       
-              return BadRequest(new { message = "Invalid operation: " + ex.Message });
-           }
-              catch (Exception ex)
-           {
-        
-               return StatusCode(500, new Response { Status = "Failure", Message = "An internal server error occurred: " + ex.Message });
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
-               return BadRequest();
-         
-           }
-    } 
+        }
 
+        [HttpPut("profile")]
+        [Authorize]
+        [ProducesResponseType (200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> EditProfile([FromBody] UserEdit userEdit)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "Invalid input data." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "Please log in to the system first." });
+
+            try
+            {
+                var result = await _authService.editUser(userEdit);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = "Invalid operation: " + ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An internal server error occurred.", details = ex.Message });
+            }
+        }
+    }
 }

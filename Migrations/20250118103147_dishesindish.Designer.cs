@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vashishth_Backened._24.Data;
@@ -11,9 +12,11 @@ using Vashishth_Backened._24.Data;
 namespace Vashishth_Backened._24.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    partial class FoodDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250118103147_dishesindish")]
+    partial class dishesindish
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,7 +102,7 @@ namespace Vashishth_Backened._24.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d39a9739-eb70-4d76-b055-b6b27f20ef0e"),
+                            Id = new Guid("ad418413-7dd1-4bfe-b588-e58ddcdd7bea"),
                             Category = "Pizza",
                             Description = "4 сыра: «Моцарелла», «Гауда», «Фета», «Дор-блю», сливочно-сырный соус, пряные травы",
                             Image = "https://mistertako.ru/uploads/products/77888c7e-8327-11ec-8575-0050569dbef0.",
@@ -110,7 +113,7 @@ namespace Vashishth_Backened._24.Migrations
                         },
                         new
                         {
-                            Id = new Guid("919fec4d-d483-4c93-a5cd-69b39a157405"),
+                            Id = new Guid("56da8b9e-5117-4572-864d-a4b2c4b6f016"),
                             Category = "Pizza",
                             Description = "Бекон, соленый огурчик, брусника, сыр «Моцарелла», сыр «Гауда», соус BBQ",
                             Image = "https://mistertako.ru/uploads/products/839d0250-8327-11ec-8575-0050569dbef0.",
@@ -121,7 +124,7 @@ namespace Vashishth_Backened._24.Migrations
                         },
                         new
                         {
-                            Id = new Guid("bd88aa3b-0c90-4d8f-9a70-67e424b03420"),
+                            Id = new Guid("4ae6f901-fe58-4acd-aa30-d9d2444ebf86"),
                             Category = "Wok",
                             Description = "Пшеничная лапша обжаренная на воке с колбасками пепперони, маслинами, сладким перцем и перцем халапеньо в томатном соусе с добавлением петрушки.",
                             Image = "https://mistertako.ru/uploads/products/663ab868-85ec-11ea-a9ab-86b1f8341741.jpg",
@@ -132,7 +135,7 @@ namespace Vashishth_Backened._24.Migrations
                         },
                         new
                         {
-                            Id = new Guid("080eb6db-ba70-4a0d-a1d8-aa256e492c98"),
+                            Id = new Guid("5a888210-0bf8-4e93-949d-5e428d25a40e"),
                             Category = "Wok",
                             Description = "Пшеничная лапша обжаренная на воке с фаршем (Говядина/свинина) и овощами.",
                             Image = "https://mistertako.ru/uploads/products/663ab866-85ec-11ea-a9ab-86b1f8341741.jpg",
@@ -143,7 +146,7 @@ namespace Vashishth_Backened._24.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c9f53d7a-4928-47c4-9443-a518ad6f7718"),
+                            Id = new Guid("fda5473b-ed7c-4800-820b-4f9107ba00a3"),
                             Category = "Wok",
                             Description = "Лапша пшеничная, куриное филе, шампиньоны, лук красный, заправка Том Ям.",
                             Image = "https://mistertako.ru/uploads/products/a41bd9fd-54ed-11ed-8575-0050569dbef0.jpg",
@@ -192,12 +195,6 @@ namespace Vashishth_Backened._24.Migrations
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("email")
                         .IsRequired()

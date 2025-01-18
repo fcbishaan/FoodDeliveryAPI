@@ -10,6 +10,7 @@ namespace Vashishth_Backened._24.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class BasketController : ControllerBase
     {
         private readonly IBasketService _basketService;
@@ -67,7 +68,9 @@ namespace Vashishth_Backened._24.Controllers
             }
         }
 
-      
+        ///<param name="dishid">Dish ID.</param>
+        /// <param name="increase">Whether to increase or decrease quantity.</param>
+        /// <returns>Success message.</returns>
         [HttpDelete("dish/{dishid}")]
         public async Task<IActionResult> DeleteBasket(Guid dishid, bool increase)
         {

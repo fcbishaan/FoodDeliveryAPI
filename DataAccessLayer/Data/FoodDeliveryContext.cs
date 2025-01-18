@@ -13,6 +13,7 @@ namespace Vashishth_Backened._24.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Basket> Baskets {get; set;}
         public DbSet<Orders> Orders {get; set;}
+        public DbSet<StorageToken> StorageTokens {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

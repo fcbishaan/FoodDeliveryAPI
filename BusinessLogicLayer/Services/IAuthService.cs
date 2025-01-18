@@ -7,7 +7,7 @@ namespace Vashishth_Backened._24.Services
     public interface IAuthService
     {
        
-        Task<string> Register(RegisterRequest registerRequest);
+        Task<string> Register(RegisterRequest rыegisterRequest);
 
         Task<bool> UserExists(string email);
 
@@ -16,5 +16,6 @@ namespace Vashishth_Backened._24.Services
         Task<UserProfileResponse> GetUserProfile (Guid userId);
 
         Task <Response> editUser (UserEdit userEdit);
+        Task<bool> logoutUser(string email);
     }
 }

@@ -19,6 +19,11 @@ builder.Services.AddScoped<IDishService,DishService>();
 builder.Services.AddScoped<IBasketService,BasketService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AnyAuthenticatedUser", policy =>
+        policy.RequireAuthenticatedUser());
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,8 +38,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],  // Reads issuer from appsettings.json
-        ValidAudience = builder.Configuration["Jwt:Audience"],  // Reads audience from appsettings.json
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],  
+        ValidAudience = builder.Configuration["Jwt:Audience"],  
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])) // Uses the secret key
     };
 });
