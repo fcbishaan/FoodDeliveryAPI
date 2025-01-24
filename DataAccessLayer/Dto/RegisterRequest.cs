@@ -11,7 +11,7 @@ namespace Vashishth_Backened._24.Dto
         public string FullName { get; set; }
 
         [Required]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
         public string Password { get; set; }
 
         [Required]
@@ -30,6 +30,7 @@ namespace Vashishth_Backened._24.Dto
 
         [Required]
         [Phone]
+        [RegularExpression(@"^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$", ErrorMessage = "Phone number must be in the format +7 (xxx) xxx-xx-xx.")]
         public string PhoneNumber { get; set; }
     }
 }

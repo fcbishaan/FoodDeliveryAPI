@@ -25,7 +25,7 @@ namespace Vashishth_Backened._24.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new { message = "Invalid input data." });
+                 return BadRequest(new { message = "Invalid input data.", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
 
             try
             {
@@ -52,10 +52,12 @@ namespace Vashishth_Backened._24.Controllers
                 return BadRequest(new { message = "Invalid input data." });
 
             try
-            {
-                var token = await _authService.Login(request);
-                return Ok(new { token });
+            {  var token = await _authService.Login(request);
+                 if (token == null)
+            return NotFound(new { message = "User not found." });
+        return Ok(new { token });
             }
+           
             catch (Exception ex)
             {
                 return Unauthorized(new { message = ex.Message });
@@ -80,8 +82,10 @@ namespace Vashishth_Backened._24.Controllers
 
             try
             {
-                var isSuccess = await _authService.logoutUser(userEmail);
-                return isSuccess ? Ok(new { message = "Logged out successfully." }) : BadRequest(new { message = "Failed to log out." });
+               var isSuccess = await _authService.logoutUser(userEmail);
+        if (!isSuccess)
+            return NotFound(new { message = "User not found." });
+        return Ok(new { message = "Logged out successfully." });
             }
             catch (Exception ex)
             {
@@ -103,7 +107,9 @@ namespace Vashishth_Backened._24.Controllers
             try
             {
                 var profile = await _authService.GetUserProfile(userGuid);
-                return Ok(profile);
+        if (profile == null)
+            return NotFound(new { message = "User profile not found." });
+        return Ok(profile);
             }
             catch (Exception ex)
             {
@@ -128,7 +134,9 @@ namespace Vashishth_Backened._24.Controllers
             try
             {
                 var result = await _authService.editUser(userEdit);
-                return Ok(result);
+                  if (result == null)
+            return NotFound(new { message = "User not found." });
+                 return Ok(result);
             }
             catch (InvalidOperationException ex)
             {

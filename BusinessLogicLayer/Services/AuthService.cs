@@ -21,7 +21,7 @@ namespace Vashishth_Backened._24.Services
             _configuration = configuration;
         }
 
-        // Register method (returns JWT token)
+        // Register method 
         public async Task<string> Register(RegisterRequest request)
         {
             if (await UserExists(request.Email))  // Check if email already exists
