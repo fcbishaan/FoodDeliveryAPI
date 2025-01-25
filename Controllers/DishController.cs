@@ -17,7 +17,9 @@ namespace Vashishth_Backened._24.Controllers
         {
             _dishService = dishService;
         }
-
+    [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
        [HttpGet]
         public async Task<ActionResult<DishesPages>> page(DishCategory? categories, bool vegetarian, DishSorting? Sorting, int page=1 )
 
@@ -37,6 +39,9 @@ namespace Vashishth_Backened._24.Controllers
             }
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
         public async Task <IActionResult> GetDishById(Guid id)
         {
             try 
@@ -54,6 +59,9 @@ namespace Vashishth_Backened._24.Controllers
             }
         }
         [HttpPost("{id}/rating")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
 		public async Task<IActionResult> AddRating(Guid id, int rating)
 		{
             try
