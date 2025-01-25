@@ -22,6 +22,9 @@ namespace Vashishth_Backened._24.Controllers
 
        
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Get()
         {
             try
@@ -43,6 +46,10 @@ namespace Vashishth_Backened._24.Controllers
 
         
         [HttpPost("dish/{dishid}")]
+         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> CreateBasket(Guid dishid)
         {
             try
@@ -72,6 +79,10 @@ namespace Vashishth_Backened._24.Controllers
         /// <param name="increase">Whether to increase or decrease quantity.</param>
         /// <returns>Success message.</returns>
         [HttpDelete("dish/{dishid}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteBasket(Guid dishid, bool increase)
         {
             try
