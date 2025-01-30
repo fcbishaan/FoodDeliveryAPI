@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Vashishth_Backened._24.Models;
 
 namespace Vashishth_Backened._24.Dto
@@ -6,13 +7,15 @@ namespace Vashishth_Backened._24.Dto
 {
     public Guid Id { get; set; } 
     public string Name { get; set; } 
-    public double Price { get; set; } // Matches the model
-    public double TotalPrice { get; set; } // Matches the model
-    public int Amount { get; set; } // Matches the model
-    public string Image { get; set; } // Matches the model
-    public string DishesId { get; set; } // Matches the model
-    public string UserId { get; set; } // Matches the model
-    public string OrderId { get; set; } // Matches the model
+    public double Price { get; set; } 
+    public double TotalPrice { get; set; } 
+    public int Amount { get; set; } 
+    public string Image { get; set; } = "No image available"; 
+  
+   public string DishesId { get; set; } 
+      public string UserId { get; set; } 
+    
+    public string OrderId { get; set; }
 }
 
 }

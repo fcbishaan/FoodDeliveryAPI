@@ -129,7 +129,8 @@ namespace Vashishth_Backened._24.Services
                 {
                     DishesId = basket.DishesId,
                     Amount = basket.Amount,
-                    TotalPrice = basket.TotalPrice
+                    TotalPrice = basket.TotalPrice,
+                    
                 }).ToList()
             };
 

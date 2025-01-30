@@ -7,6 +7,6 @@ public class StorageToken{
     public string token {get; set;}
 
     public DateTime CreatedAt { get; set; }
-     public bool IsRevoked { get; set; }
+  
 }
 }

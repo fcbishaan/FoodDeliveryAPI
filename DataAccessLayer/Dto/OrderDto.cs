@@ -10,11 +10,11 @@ namespace Vashishth_Backened._24.Dto
     public class OrderDto
     {
         public Guid Id {get; set;}
-        public string deliveryTime { get; set; }
+        public string deliveryTime { get; set; } = "Not specified";
         public string orderTime { get; set; }
         public OrderStatus status { get; set; }
         public int price { get; set; }
-        public List<DishBasketDto> dishes { get; set; }
+        public List<DishBasketDto> dishes { get; set; } = new List<DishBasketDto>(); 
         public string address { get; set; }
     }
 }

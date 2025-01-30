@@ -16,75 +16,73 @@ namespace Vashishth_Backened._24
             _context = context;
         }   
         [AllowAnonymous]
-        public async Task<DishesPages> page(DishCategory? categories, bool vegetarian, DishSorting? sorting, int page )
+       public async Task<DishesPages> page(DishCategory? categories, bool vegetarian, DishSorting? sorting, int page)
+{
+    IQueryable<Dish> _query = _context.Dishes; 
+
+    if (categories != null)
+    {
+        _query = _query.Where(t => t.Category == categories);
+    }
+    if (vegetarian)
+    {
+        _query = _query.Where(t => t.Vegetarian.Equals(vegetarian));
+    }
+    if (sorting != null)
+    {
+        switch (sorting.Value)
         {
-            var _query = await _context.Dishes.ToListAsync();
-            if(categories != null)
-            {
-                _query = _query.Where(t=>t.Category == categories).ToList();
-            }
-            if(vegetarian)
-            {
-                _query = _query.Where(t=>t.Vegetarian.Equals(vegetarian)).ToList();
-
-            }
-            if(sorting != null)
-            {
-                if(sorting.Value.Equals(DishSorting.NameAsc))
-                {
-                    _query.OrderBy(t=>t.Name);
-                }
-                if(sorting.Value.Equals(DishSorting.NameDesc))
-                {
-                    _query.OrderByDescending(t=>t.Name);
-                }
-                if(sorting.Value.Equals(DishSorting.PriceAsc))
-                {
-                    _query.OrderBy(t=>t.Price);
-                }
-                if(sorting.Value.Equals(DishSorting.PriceDesc))
-                {
-                    _query.OrderByDescending(t=> t.Price);
-                }
-                if(sorting.Value.Equals(DishSorting.RatingAsc))
-                {
-                    _query.OrderBy(t=>t.Rating);
-                }
-                if(sorting.Value.Equals(DishSorting.RatingDesc))
-                {
-                    _query.OrderByDescending(t => t.Rating);
-                }
-            }
-                int pageSize = 5; 
-                int totalCount = _context.Dishes.Count();
-                int totalPages = (int)Math.Ceiling(totalCount/(double)pageSize);
-                var items = _query.Skip((page-1) * pageSize).Take(pageSize).ToList();
-
-                var pagination = new Pagination()
-                {
-                    count = totalCount,
-                    current = page,
-                    size = pageSize
-
-                };
-            
-                
-                return new DishesPages
-                {
-                    Dishes = items.Select(i=>new DishDto{
-                        Id = i.Id,
-                        Name = i.Name,
-                        Description= i.Description,
-                        Price = i.Price,
-                        Category = i.Category,
-                        Vegetarian = i.Vegetarian,
-                        Rating = i.Rating,
-                        Image =i.Image,
-
-                    }).ToList(),
-                    Pagination = pagination
-                };
+            case DishSorting.NameAsc:
+                _query = _query.OrderBy(t => t.Name);
+                break;
+            case DishSorting.NameDesc:
+                _query = _query.OrderByDescending(t => t.Name);
+                break;
+            case DishSorting.PriceAsc:
+                _query = _query.OrderBy(t => t.Price);
+                break;
+            case DishSorting.PriceDesc:
+                _query = _query.OrderByDescending(t => t.Price);
+                break;
+            case DishSorting.RatingAsc:
+                _query = _query.OrderBy(t => t.Rating);
+                break;
+            case DishSorting.RatingDesc:
+                _query = _query.OrderByDescending(t => t.Rating);
+                break;
         }
+    }
+
+    int pageSize = 5;
+    int totalCount = await _query.CountAsync(); // Count should be performed before pagination
+    int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+    var items = await _query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+    var pagination = new Pagination()
+    {
+        count = totalCount,
+        current = page,
+        size = pageSize
+    };
+
+    return new DishesPages
+    {
+        Dishes = items.Select(i => new DishDto
+        {
+            Id = i.Id,
+            Name = i.Name,
+            Description = i.Description,
+            Price = i.Price,
+            Category = i.Category,
+            Vegetarian = i.Vegetarian,
+            Rating = i.Rating,
+            Image = i.Image
+        }).ToList(),
+        Pagination = pagination
+    };
+}
+
         [AllowAnonymous]
         public async Task<DishDto> GetDishById(Guid id)
         {

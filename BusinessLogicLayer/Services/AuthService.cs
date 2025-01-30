@@ -8,8 +8,6 @@ using Vashishth_Backened._24.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Vashishth_Backened._24.Migrations;
-using Swashbuckle.AspNetCore.Annotations;
 namespace Vashishth_Backened._24.Services
 {
     public class AuthService : IAuthService
@@ -23,11 +21,8 @@ namespace Vashishth_Backened._24.Services
             _configuration = configuration;
         }
 
-        // Register method 
-         [SwaggerOperation(
-            Summary = "Register a new user",
-            Description = "Creates a user account with email and password"
-        )]
+         
+       
         public async Task<string> Register(RegisterRequest request, bool IsAdmin)
         {
             if (await UserExists(request.Email))  
@@ -151,30 +146,27 @@ namespace Vashishth_Backened._24.Services
                 Message = "User Updated successfully."
             };
         }
-        
-        public async Task<bool> logoutUser(string email)
-      {
-      try
-        {
-        var user = await _context.StorageTokens
-            .FirstOrDefaultAsync(u => u.email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        public async Task<bool> logoutToken(string token)
+{
+    var storedToken = await _context.StorageTokens
+        .Where(t => t.token == token) 
+        .FirstOrDefaultAsync();
 
-        if (user != null)
-        {
-             user.IsRevoked = true;
-            _context.StorageTokens.Remove(user);
-            await _context.SaveChangesAsync();
-        }
+    if (storedToken == null)
+    {
+        Console.WriteLine("Token not found: " + token);
+        return false; 
+    }
 
-         return true; 
-        }
-          catch (Exception ex)
-       {
-          Console.WriteLine($"An error occurred while logging out: {ex.Message}");
-          Console.WriteLine(ex.StackTrace);
-          throw new Exception("An error occurred while logging out.", ex);
-        }
-       }
+    _context.StorageTokens.Remove(storedToken);
+    await _context.SaveChangesAsync(); 
+
+    Console.WriteLine("Token removed successfully.");
+    return true;
+}
+
+
+
        [Authorize(policy:"AdminOnly")]
        public async Task DeleteAllUserAsync ()
        {

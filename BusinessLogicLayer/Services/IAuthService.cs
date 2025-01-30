@@ -16,7 +16,7 @@ namespace Vashishth_Backened._24.Services
         Task<UserProfileResponse> GetUserProfile (Guid userId);
 
         Task <Response> editUser (UserEdit userEdit);
-        Task<bool> logoutUser(string email);
+        Task<bool> logoutToken(string token);
         Task DeleteAllUserAsync ();
     }
 }

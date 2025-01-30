@@ -4,6 +4,7 @@ using Vashishth_Backened._24.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Vashishth_Backened._24.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Vashishth_Backened._24.Controllers
 {
@@ -22,6 +23,10 @@ namespace Vashishth_Backened._24.Controllers
         [ProducesResponseType (200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(typeof(Response), 500)]
+          [SwaggerOperation(
+            Summary = "Register a new user",
+            Description = "Creates a user account with email and password"
+        )]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
@@ -32,7 +37,7 @@ namespace Vashishth_Backened._24.Controllers
                  Console.WriteLine($"Incoming role: {request.Role}");
                 if(string.IsNullOrEmpty(request.Role)||(request.Role!=Role.Administrator && request.Role != Role.User))
                 {
-                    request.Role = Role.User;
+                    request.Role = Role.User.ToString();
                 }
                 bool isAdmin = request.Role == Role.Administrator;
                 var token = await _authService.Register(request, isAdmin);
@@ -71,33 +76,41 @@ namespace Vashishth_Backened._24.Controllers
         }
 
         [HttpPost("logout")]
-        [Authorize(Policy = "AnyAuthenticatedUser")]
+        [Authorize]
         [ProducesResponseType(typeof(StorageToken), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Logout()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized(new { message = "Please log in to the system first." });
 
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (string.IsNullOrEmpty(userEmail))
-                return BadRequest(new { message = "User email not found in token." });
+public async Task<IActionResult> Logout()
+{
+    var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            try
-            {
-               var isSuccess = await _authService.logoutUser(userEmail);
+    if (string.IsNullOrEmpty(token))
+    {
+        Console.WriteLine("Logout failed: Token not found in request headers.");
+        return BadRequest(new { message = "Token not found in request." });
+    }
+
+    try
+    {
+        bool isSuccess = await _authService.logoutToken(token);
+
         if (!isSuccess)
-            return NotFound(new { message = "User not found." });
-        return Ok(new { message = "Logged out successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while logging out.", details = ex.Message });
-            }
+        {
+            return NotFound(new { message = "Token not found or already logged out." });
         }
+
+        return Ok(new { message = "Logged out successfully." });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error during logout: {ex.Message}");
+        return StatusCode(500, new { message = "An error occurred while logging out.", details = ex.Message });
+    }
+}
+
+
 
         [HttpGet("profile")]
         [Authorize]
