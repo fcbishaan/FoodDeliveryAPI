@@ -10,5 +10,9 @@ namespace Vashishth_Backened._24.Services
         Task<DishDto> GetDishById (Guid id);
         bool CheckRating(Guid id, string userid);
 		Task<Response> SetRating(Guid id, int rating);
+        Task<Response> DeleteDish (Guid id);
+         Task<Response> UpdateDish(Guid id, DishDto dishDto);
+         Task <Response> CreateDish (DishDto dishDto);
+
     }
 }

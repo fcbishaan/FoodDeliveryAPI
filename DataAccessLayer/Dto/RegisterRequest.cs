@@ -12,6 +12,7 @@ namespace Vashishth_Backened._24.Dto
 
         [Required]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
+        
         public string Password { get; set; }
 
         [Required]
@@ -19,6 +20,7 @@ namespace Vashishth_Backened._24.Dto
         public string Email { get; set; }
 
         [Required]
+        [MinLength(10, ErrorMessage = "Address must be at least 10 characters long.")]
         public string Address { get; set; }
 
         [Required]
@@ -32,5 +34,6 @@ namespace Vashishth_Backened._24.Dto
         [Phone]
         [RegularExpression(@"^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$", ErrorMessage = "Phone number must be in the format +7 (xxx) xxx-xx-xx.")]
         public string PhoneNumber { get; set; }
+         public string Role { get; set; }
     }
 }

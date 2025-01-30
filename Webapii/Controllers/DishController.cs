@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Vashishth_Backened._24.Dto;
@@ -108,5 +109,46 @@ namespace Vashishth_Backened._24.Controllers
                 return StatusCode(500);
             }
         }
+        
+        [HttpPost("create")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)]
+        public async Task <IActionResult> createDish ([FromBody] DishDto dishDto)
+        {
+            if(!User.IsInRole("Admin"))
+            {
+                return Forbid("only Admins can create dishes");
+            }
+            var response = await _dishService.CreateDish(dishDto);
+            return Ok(response);
+        }
+        
+        [HttpPut("update/{id}")]
+[ProducesResponseType(200)]
+[ProducesResponseType(403)]
+public async Task<IActionResult> UpdateDish(Guid id, [FromBody] DishDto dishDto)
+{
+    if (!User.IsInRole("Admin"))
+    {
+        return Forbid("Only Admins can edit dishes.");
+    }
+
+    var response = await _dishService.UpdateDish(id, dishDto);
+    return Ok(response);
+}
+
+[HttpDelete("delete/{id}")]
+[ProducesResponseType(200)]
+[ProducesResponseType(403)]
+public async Task<IActionResult> DeleteDish(Guid id)
+{
+    if (!User.IsInRole("Admin"))
+    {
+        return Forbid("Only Admins can delete dishes.");
+    }
+
+    var response = await _dishService.DeleteDish(id);
+    return Ok(response);
+}
     }
 }

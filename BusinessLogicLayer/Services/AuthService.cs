@@ -8,6 +8,8 @@ using Vashishth_Backened._24.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Vashishth_Backened._24.Migrations;
+using Swashbuckle.AspNetCore.Annotations;
 namespace Vashishth_Backened._24.Services
 {
     public class AuthService : IAuthService
@@ -22,12 +24,16 @@ namespace Vashishth_Backened._24.Services
         }
 
         // Register method 
-        public async Task<string> Register(RegisterRequest request)
+         [SwaggerOperation(
+            Summary = "Register a new user",
+            Description = "Creates a user account with email and password"
+        )]
+        public async Task<string> Register(RegisterRequest request, bool IsAdmin)
         {
-            if (await UserExists(request.Email))  // Check if email already exists
+            if (await UserExists(request.Email))  
                 throw new Exception("Email is already in use.");
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);  // Hash password
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);  
 
             var user = new User
             {
@@ -37,21 +43,23 @@ namespace Vashishth_Backened._24.Services
                 Address = request.Address,
                 BirthDate = request.BirthDate,
                 Gender = request.Gender,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                Role = IsAdmin ? Role.Administrator : Role.User
             };
 
-            _context.Users.Add(user);  // Add user to database
+            _context.Users.Add(user); 
             await _context.SaveChangesAsync();
-
-            return GenerateJwtToken(user);  // Generate and return JWT token
+            var token = GenerateJwtToken(user,IsAdmin);
+    return token;
+        
         }
         public async Task<bool> UserExists(string email)
         {
-            // Query the database to check if a user with the given email exists
+            
             return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user, bool isAdmin)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
@@ -61,9 +69,11 @@ namespace Vashishth_Backened._24.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    //new Claim(ClaimTypes.Name, user.FullName),
+                    new Claim(ClaimTypes.Role, isAdmin? Role.Administrator: Role.User)
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                 Expires = DateTime.UtcNow.AddDays(7),
                 Audience = _configuration["Jwt:Audience"],
                 Issuer = _configuration["Jwt:Issuer"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -85,7 +95,7 @@ namespace Vashishth_Backened._24.Services
                 throw new Exception ("Invalid Email or password.");
             }
 
-            string token = GenerateJwtToken(user);
+            string token = GenerateJwtToken(user, user.Role == Role.Administrator);
             var storeToken = new StorageToken
             {
                 id = Guid.NewGuid(),
@@ -143,9 +153,9 @@ namespace Vashishth_Backened._24.Services
         }
         
         public async Task<bool> logoutUser(string email)
-     {
-    try
-    {
+      {
+      try
+        {
         var user = await _context.StorageTokens
             .FirstOrDefaultAsync(u => u.email.Equals(email, StringComparison.OrdinalIgnoreCase));
 
@@ -156,13 +166,22 @@ namespace Vashishth_Backened._24.Services
             await _context.SaveChangesAsync();
         }
 
-        return true; // Return true regardless of whether the token was found or not.
-    }
-    catch (Exception ex)
-    {
-        throw new Exception("An error occurred while logging out.", ex);
-    }
-      }
+         return true; 
+        }
+          catch (Exception ex)
+       {
+          Console.WriteLine($"An error occurred while logging out: {ex.Message}");
+          Console.WriteLine(ex.StackTrace);
+          throw new Exception("An error occurred while logging out.", ex);
+        }
+       }
+       [Authorize(policy:"AdminOnly")]
+       public async Task DeleteAllUserAsync ()
+       {
+        var users = await _context.Users.ToListAsync();
+        _context.Users.RemoveRange(users);
+        await _context.SaveChangesAsync();
+       }
   }
 
     

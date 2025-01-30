@@ -8,10 +8,12 @@ using Vashishth_Backened._24.Services;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using Vashishth_Backened._24;
+using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
-// Add services to the container.
+
 builder.Services.AddDbContext<FoodDeliveryContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService,AuthService>();
@@ -21,7 +23,10 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AnyAuthenticatedUser", policy =>
+ options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin")); 
+
+        options.AddPolicy("AnyAuthenticatedUser", policy =>
         policy.RequireAuthenticatedUser());
 });
 
@@ -48,7 +53,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -74,7 +79,9 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
+    
 });
+
 
 
 var app = builder.Build();

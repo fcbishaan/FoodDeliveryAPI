@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Vashishth_Backened._24.Data;
@@ -14,6 +15,7 @@ namespace Vashishth_Backened._24
         {
             _context = context;
         }   
+        [AllowAnonymous]
         public async Task<DishesPages> page(DishCategory? categories, bool vegetarian, DishSorting? sorting, int page )
         {
             var _query = await _context.Dishes.ToListAsync();
@@ -83,6 +85,7 @@ namespace Vashishth_Backened._24
                     Pagination = pagination
                 };
         }
+        [AllowAnonymous]
         public async Task<DishDto> GetDishById(Guid id)
         {
             var dish = await _context.Dishes.FindAsync(id);
@@ -125,5 +128,51 @@ namespace Vashishth_Backened._24
 				return null;
 			}
 		}
+        public async Task <Response> CreateDish (DishDto dishDto)
+        {
+            var dish = new Dish
+            {
+                Id = Guid.NewGuid(),
+                Name = dishDto.Name,
+                Description = dishDto.Description,
+                Price = dishDto.Price,
+                Category = dishDto.Category,
+                Vegetarian = dishDto.Vegetarian,
+                Image = dishDto.Image
+            };
+
+            _context.Dishes.Add(dish);
+            await _context.SaveChangesAsync();
+            return new Response {Status = "success", Message = "Dish Created Successfully"};
+        }
+        public async Task<Response> UpdateDish(Guid id, DishDto dishDto)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null )
+            {
+                return new Response {Status = "Error" , Message = "Dish not found"};
+            }
+            dish.Name = dishDto.Name;
+            dish.Description = dishDto.Description;
+            dish.Price = dishDto.Price;
+            dish.Category = dishDto.Category;
+            dish.Vegetarian = dishDto.Vegetarian;
+            dish.Image = dishDto.Image;
+
+            await _context.SaveChangesAsync();
+            return new Response {Status = "success", Message = "Dish Updated Successfully"};
+
+        }
+        public async Task<Response> DeleteDish (Guid id)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if(dish == null )
+            {
+                return new Response { Status = "Error", Message = "Dish Not Found" };
+            }
+            _context.Dishes.Remove(dish);
+            await _context.SaveChangesAsync();
+            return new Response { Status = "Success", Message = "Dish Deleted Successfully" };
+        }
     }
 }

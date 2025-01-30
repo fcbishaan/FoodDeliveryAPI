@@ -29,7 +29,13 @@ namespace Vashishth_Backened._24.Controllers
 
             try
             {
-                var token = await _authService.Register(request);
+                 Console.WriteLine($"Incoming role: {request.Role}");
+                if(string.IsNullOrEmpty(request.Role)||(request.Role!=Role.Administrator && request.Role != Role.User))
+                {
+                    request.Role = Role.User;
+                }
+                bool isAdmin = request.Role == Role.Administrator;
+                var token = await _authService.Register(request, isAdmin);
                 return Ok(new { token });
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("Email is already in use"))
@@ -146,6 +152,12 @@ namespace Vashishth_Backened._24.Controllers
             {
                 return StatusCode(500, new { message = "An internal server error occurred.", details = ex.Message });
             }
+        }
+        [HttpDelete("reset-users")]
+        public async Task <IActionResult> ResetUsers()
+        {
+            await _authService.DeleteAllUserAsync();
+            return Ok (new {message = "All users have been deleted"});
         }
     }
 }
